@@ -1,7 +1,11 @@
-Dynamic module support for NodeJS
+evented I/O for v8 javascript + dynamic modules
 ===
 
-### Usage:
+### Why:
+
+It allows to use NodeJS as a static/dynamic library and lazily load your own native extensions in the main binary.
+
+### Example:
 
 main.cc:
 
