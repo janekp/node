@@ -208,6 +208,9 @@ struct node_module_struct {
 
 node_module_struct* get_builtin_module(const char *name);
 
+node_module_struct *get_dynamic_module(const char *name);
+void register_dynamic_module(node_module_struct *module);
+
 /**
  * When this version number is changed, node.js will refuse
  * to load older modules.  This should be done whenever

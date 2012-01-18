@@ -64,8 +64,42 @@ node_module_struct* get_builtin_module(const char *name)
       return cur;
     }
   }
+  
+  return NULL;
+}
+
+/* Dynamic modules (useful when node is used as a static/dynamic library) */
+
+static node_module_struct **dynamic_modules = NULL;
+static int dynamic_modules_count = 0;
+
+node_module_struct **get_dynamic_modules()
+{
+  return dynamic_modules;
+}
+
+node_module_struct *get_dynamic_module(const char *name)
+{
+  if(dynamic_modules != NULL) {
+    node_module_struct **iterator = dynamic_modules;
+    node_module_struct *cur;
+    
+    while((cur = *iterator++) != NULL) {
+      if (strcmp(cur->modname, name) == 0) {
+        return cur;
+      }
+    }
+  }
 
   return NULL;
+}
+
+void register_dynamic_module(node_module_struct *module)
+{
+  dynamic_modules = (node_module_struct **)realloc(dynamic_modules, sizeof(node_module_struct *) * (dynamic_modules_count + 2));
+  dynamic_modules[dynamic_modules_count] = module;
+  dynamic_modules[dynamic_modules_count + 1] = NULL;
+  dynamic_modules_count += 1;
 }
 
 }; // namespace node

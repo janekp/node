@@ -32,6 +32,8 @@ using namespace v8;
 
 namespace node {
 
+extern node_module_struct **get_dynamic_modules();
+
 Handle<String> MainSource() {
   return BUILTIN_ASCII_ARRAY(node_native, sizeof(node_native)-1);
 }
@@ -39,6 +41,19 @@ Handle<String> MainSource() {
 void DefineJavaScript(v8::Handle<v8::Object> target) {
   HandleScope scope;
 
+  /* Allow to load dynamic modules lazily (useful when node is used as a static/dynamic library) */
+  node_module_struct **iterator = get_dynamic_modules();
+  
+  if(iterator != NULL) {
+    node_module_struct *cur;
+    char buf[200];
+    
+  	while((cur = *iterator++) != NULL) {
+  	  snprintf(buf, sizeof(buf), "module.exports = process.binding('%s');", cur->modname);
+      target->Set(String::New(cur->modname), String::New((const char *)&buf));
+    }
+  }
+  
   for (int i = 0; natives[i].name; i++) {
     if (natives[i].source != node_native) {
       Local<String> name = String::New(natives[i].name);

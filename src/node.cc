@@ -1813,7 +1813,8 @@ static Handle<Value> Binding(const Arguments& args) {
   uint32_t l = module_load_list->Length();
   module_load_list->Set(l, String::New(buf));
 
-  if ((modp = get_builtin_module(*module_v)) != NULL) {
+  if ((modp = get_builtin_module(*module_v)) != NULL  ||
+      (modp = get_dynamic_module(*module_v)) != NULL) {
     exports = Object::New();
     modp->register_func(exports);
     binding_cache->Set(module, exports);
